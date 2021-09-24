@@ -1,6 +1,7 @@
 package com.example.demo.repository;
 
 import com.example.demo.domain.Member;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -10,6 +11,11 @@ import static org.assertj.core.api.Assertions.*;
 public class MemoryMemberRepositoryTest {
 
     MemoryMemberRepository repository = new MemoryMemberRepository();
+
+    @AfterEach
+    public void afterEach() {
+        repository.clearStore();
+    }
 
     @Test
     public void save() {
@@ -26,7 +32,7 @@ public class MemoryMemberRepositoryTest {
         Member member = new Member();
         member.setName("spring");
         repository.save(member);
-        
+
         Member member2 = new Member();
         member2.setName("spring2");
         repository.save(member2);
@@ -51,7 +57,6 @@ public class MemoryMemberRepositoryTest {
 
 
         List<Member> result = repository.findAll();
-
         assertThat(result.size()).isEqualTo(2);
     }
 }
