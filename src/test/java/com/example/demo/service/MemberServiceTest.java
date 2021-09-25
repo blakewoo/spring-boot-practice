@@ -1,7 +1,11 @@
 package com.example.demo.service;
 
 import com.example.demo.domain.Member;
+import com.example.demo.repository.MemoryMemberRepository;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
@@ -9,7 +13,19 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class MemberServiceTest {
 
-    MemberService memberService = new MemberService();
+    MemberService memberService;
+    MemoryMemberRepository memberRepository;
+
+    @BeforeEach
+    public void beforeEach() {
+        memberRepository = new MemoryMemberRepository();
+        memberService = new MemberService(memberRepository);
+    }
+
+    @AfterEach
+    public void afterEach() {
+        memberRepository.clearStore();
+    }
 
     @Test
     void join() {
@@ -36,17 +52,17 @@ class MemberServiceTest {
 
         //when
         memberService.join(member);
-        try{
-            memberService.join(member2);
-            fail("");
-        }
-        catch(IllegalStateException e){
-            Assertions.assertThat(e.getMessage()).isEqualTo("이미 존재하는 회원입니다.");
-        }
+        assertThrows(IllegalStateException.class, () -> memberService.join(member2));
+
+//        try{
+//            memberService.join(member2);
+//            fail("");
+//        }
+//        catch(IllegalStateException e){
+//            Assertions.assertThat(e.getMessage()).isEqualTo("이미 존재하는 회원입니다.");
+//        }
 
         //then
-
-
     }
 
     @Test
